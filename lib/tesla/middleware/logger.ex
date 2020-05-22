@@ -136,7 +136,10 @@ defmodule Tesla.Middleware.Logger do
     level = log_level(response, opts)
     Logger.log(level, fn -> Formatter.format(env, response, time, @format) end)
 
-    if Keyword.get(@config, :debug, true) do
+    # Fetch config to allow enabling debug logs in runtime
+    config = Application.get_env(:tesla, __MODULE__, [])
+
+    if Keyword.get(config, :debug, true) do
       Logger.debug(fn -> debug(env, response, opts) end)
     end
 
